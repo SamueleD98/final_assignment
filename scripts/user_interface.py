@@ -1,8 +1,12 @@
 #! /usr/bin/env python
 
 import rospy
+import actionlib
+from move_base_msgs.msg import *
 from std_srvs.srv import *
 
+client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+    
 
 
 
@@ -27,7 +31,20 @@ def main():
 			
 			y = float(input('		y :'))
 			
-			#set the move_base goal and wait giving the user the chance to cancel the action
+			client.wait_for_server()
+			
+			print ('	Trying to reach the point [{}, {}]'.format(x, y))
+			
+			
+			goal = MoveBaseGoal()
+			goal.target_pose.header.frame_id = 'map'
+			goal.target_pose.pose.orientation.w = 1.0
+			goal.target_pose.pose.position.x = x
+			goal.target_pose.pose.position.y = y
+			      			
+			client.send_goal(goal)
+			client.wait_for_result()
+  			#client.get_result()
 			
 		elif cmd == 2:
 			

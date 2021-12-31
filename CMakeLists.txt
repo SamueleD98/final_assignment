@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   tf
+  move_base
 )
 
 ## System dependencies are found with CMake's conventions
@@ -123,6 +124,8 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
 )
+
+#														add_dependencies(user_interface ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
