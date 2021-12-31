@@ -6,10 +6,7 @@ from move_base_msgs.msg import *
 from std_srvs.srv import *
 
 client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-    
-
-
-
+ 
 def main():
 	global pub, active_
 
@@ -23,6 +20,8 @@ def main():
 	
 		cmd = float(input('\nCommand :'))
 		
+		print(cmd)
+		
 		if cmd == 1:
 		
 			print ('	Please type the coordinates:')
@@ -33,7 +32,7 @@ def main():
 			
 			client.wait_for_server()
 			
-			print ('	Trying to reach the point [{}, {}]'.format(x, y))
+			print ('	Lets go to [{}, {}]'.format(x, y))
 			
 			
 			goal = MoveBaseGoal()
@@ -41,14 +40,30 @@ def main():
 			goal.target_pose.pose.orientation.w = 1.0
 			goal.target_pose.pose.position.x = x
 			goal.target_pose.pose.position.y = y
-			      			
+			      	
 			client.send_goal(goal)
-			client.wait_for_result()
+			
+			#while not finished
+				#finished = client.wait_for_result(rospy.Duration(1*30))
+			
+			#while 1:
+			#	print (a)
+			#	while a == client.get_goal_status_text():
+			#		b = 1
+			#	a = client.get_goal_status_text()
+
+			#print ('	Trying to reach the point [{}, {}].\nPress " 5 " to cancel the command.'.format(x, y))
+			# Due modi:
+				#1: aspetto in ui che completi in un tempo fissato, user non può agire
+				#2: un altro nodo aspetta che il coso agisca
+			#print ('	Reached')
+			#bool finished_before_timeout = client.wait_for_result(rospy.Duration(1*30))
   			#client.get_result()
 			
 		elif cmd == 2:
 			
 			print ('	Ok')
+			system('rosrun teleop_twist_keyboard teleop_twist_keyboard.py')
 			
 			#find a way to reproduce the teleop thing
 		
