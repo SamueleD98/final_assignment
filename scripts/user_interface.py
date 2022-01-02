@@ -4,8 +4,15 @@ import rospy
 import actionlib
 from move_base_msgs.msg import *
 from std_srvs.srv import *
+from final_assignment.msg import ManualControl
 
 client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+
+pub = rospy.Publisher('/middleman/control', ManualControl)
+
+reset_control = ManualControl()
+reset_control.ctrl = 0
+reset_control.helper = 0
  
 def main():
 	global pub, active_
@@ -20,7 +27,9 @@ def main():
 	
 		cmd = float(input('\nCommand :'))
 		
-		print(cmd)
+		client.wait_for_server()
+		client.cancel_all_goals()
+		pub.publish(reset_control)
 		
 		if cmd == 1:
 		
@@ -30,9 +39,9 @@ def main():
 			
 			y = float(input('		y :'))
 			
-			client.wait_for_server()
+			#client.wait_for_server()
 			
-			print ('	Lets go to [{}, {}]'.format(x, y))
+			print ('\n	Going to [{}, {}]'.format(x, y))
 			
 			
 			goal = MoveBaseGoal()
@@ -43,37 +52,37 @@ def main():
 			      	
 			client.send_goal(goal)
 			
-			#while not finished
-				#finished = client.wait_for_result(rospy.Duration(1*30))
+			print ('\n	Press any number to cancel')
 			
-			#while 1:
-			#	print (a)
-			#	while a == client.get_goal_status_text():
-			#		b = 1
-			#	a = client.get_goal_status_text()
-
-			#print ('	Trying to reach the point [{}, {}].\nPress " 5 " to cancel the command.'.format(x, y))
-			# Due modi:
-				#1: aspetto in ui che completi in un tempo fissato, user non può agire
-				#2: un altro nodo aspetta che il coso agisca
-			#print ('	Reached')
-			#bool finished_before_timeout = client.wait_for_result(rospy.Duration(1*30))
-  			#client.get_result()
+			a = client.wait_for_result(rospy.Duration(30))
+			
+			print(a)
 			
 		elif cmd == 2:
 			
-			print ('	Ok')
-			system('rosrun teleop_twist_keyboard teleop_twist_keyboard.py')
+			print ('\n	You have the control')
 			
-			#find a way to reproduce the teleop thing
+			control_command = ManualControl()
+			control_command.ctrl = 1
+			control_command.helper = 0
+			pub.publish(control_command)
+			
+			print ('	Press any number to cancel')	
 		
 		elif cmd == 3:
+		
+			print ('\n	You have partially the control')
+		
+			control_command = ManualControl()
+			control_command.ctrl = 1
+			control_command.helper = 1
+			pub.publish(control_command)	
 			
-			print ('	Ok')
-			
-			#find a way to reproduce the teleop thing, you want the cpu to bypass user commands if they are suicidal
+			print ('	Press any number to cancel')		
 			
 		elif cmd == 4:
+			
+			client.cancel_all_goals()
 			
 			return
 		else:
