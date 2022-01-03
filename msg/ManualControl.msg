@@ -1,2 +1,0 @@
-bool ctrl
-bool helper

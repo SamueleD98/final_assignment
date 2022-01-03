@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<launch>
+	<include file="$(find final_assignment)/launch/simulation_gmapping.launch" />
+	<include file="$(find final_assignment)/launch/move_base.launch" />
+   	
+   	<remap from="/cmd_vel" to="/middleman/cmd_vel"/>
+   	<node pkg="teleop_twist_keyboard" name="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" required="true" launch-prefix="xterm -e" /> 
+   	
+</launch>
+
+
+
