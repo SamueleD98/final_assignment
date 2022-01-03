@@ -18,8 +18,12 @@ def main():
 	
 	while not rospy.is_shutdown():
 	
-		cmd = float(input('\nCommand :'))
-		
+		try:
+			cmd = float(input('\nCommand :'))
+		except:
+			print ('	Wrong character, please type again.')
+			continue
+			
 		control_command = CommandMessage()
 		control_command.enable_taxi = False
 		control_command.des_x = 0
@@ -48,6 +52,7 @@ def main():
 			
 			command.publish(control_command)
 			
+			print ('\n	Cancel by giving another command or by pressing " 0 "')	
 			
 		elif cmd == 2:
 			
@@ -57,7 +62,7 @@ def main():
 			
 			command.publish(control_command)
 			
-			print ('	Cancel giving another command or by pressing any other number')	
+			print ('\n	Cancel by giving another command or by pressing " 0 "')	
 		
 		elif cmd == 3:
 		
@@ -68,7 +73,7 @@ def main():
 			
 			command.publish(control_command)	
 			
-			print ('	Press any number to cancel')		
+			print ('\n	Cancel by giving another command or by pressing " 0 "')	
 			
 		elif cmd == 4:
 			
@@ -76,11 +81,11 @@ def main():
 			
 		elif cmd == 0:
 		
-			print ('	Canceled')
+			print ('\n	Canceled')
 			
 		else:
 		
-			print ('	Wrong character, please type again.')
+			print ('	Please type again.')
 		
 		rate.sleep()
 

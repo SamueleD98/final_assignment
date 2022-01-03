@@ -84,7 +84,12 @@ def go_to(x, y):
 		
 	client.send_goal(goal)		
 	
-	#client.wait_for_result(rospy.Duration(30))
+	#if not client.wait_for_result(rospy.Duration(30)):
+		#client.cancel_goal()
+		#vel = Twist()	
+		#vel.linear.x = 0.99999
+		#vel.angular.z = 0.99999
+		#pub.publish(vel)	
 			
 			
 def new_vel(vel):
