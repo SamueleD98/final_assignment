@@ -4,19 +4,12 @@ import rospy
 import actionlib
 from move_base_msgs.msg import *
 from std_srvs.srv import *
-from final_assignment.msg import ManualControl
+from final_assignment.msg import CommandMessage
 
-client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-
-pub = rospy.Publisher('/middleman/control', ManualControl)
-
-reset_control = ManualControl()
-reset_control.ctrl = 0
-reset_control.helper = 0
+command = rospy.Publisher('/middleman/control', CommandMessage)
  
 def main():
-	global pub, active_
-
+		
 	rospy.init_node('user_interface')
 
 	print ('\n\nWelcome, please type:\n	" 1 " to autonomously reach a point,\n	" 2 " to drive the robot with the keyboard,\n	" 3 " to drive the robot assisted by the computer,\n	" 4 " to close the simulation.')
@@ -27,9 +20,15 @@ def main():
 	
 		cmd = float(input('\nCommand :'))
 		
-		client.wait_for_server()
-		client.cancel_all_goals()
-		pub.publish(reset_control)
+		control_command = CommandMessage()
+		control_command.enable_taxi = False
+		control_command.des_x = 0
+		control_command.des_y = 0
+		control_command.enable_userCtrl = False
+		control_command.enable_helper = False		
+		
+		# Reset the configuration, canceling every past command
+		command.publish(control_command)
 		
 		if cmd == 1:
 		
@@ -43,48 +42,42 @@ def main():
 			
 			print ('\n	Going to [{}, {}]'.format(x, y))
 			
+			control_command.enable_taxi = True
+			control_command.des_x = x
+			control_command.des_y = y
 			
-			goal = MoveBaseGoal()
-			goal.target_pose.header.frame_id = 'map'
-			goal.target_pose.pose.orientation.w = 1.0
-			goal.target_pose.pose.position.x = x
-			goal.target_pose.pose.position.y = y
-			      	
-			client.send_goal(goal)
+			command.publish(control_command)
 			
-			print ('\n	Press any number to cancel')
-			
-			a = client.wait_for_result(rospy.Duration(30))
-			
-			print(a)
 			
 		elif cmd == 2:
 			
 			print ('\n	You have the control')
 			
-			control_command = ManualControl()
-			control_command.ctrl = 1
-			control_command.helper = 0
-			pub.publish(control_command)
+			control_command.enable_userCtrl = True
 			
-			print ('	Press any number to cancel')	
+			command.publish(control_command)
+			
+			print ('	Cancel giving another command or by pressing any other number')	
 		
 		elif cmd == 3:
 		
 			print ('\n	You have partially the control')
 		
-			control_command = ManualControl()
-			control_command.ctrl = 1
-			control_command.helper = 1
-			pub.publish(control_command)	
+			control_command.enable_userCtrl = True
+			control_command.enable_helper = True
+			
+			command.publish(control_command)	
 			
 			print ('	Press any number to cancel')		
 			
 		elif cmd == 4:
 			
-			client.cancel_all_goals()
-			
 			return
+			
+		elif cmd == 0:
+		
+			print ('	Canceled')
+			
 		else:
 		
 			print ('	Wrong character, please type again.')
