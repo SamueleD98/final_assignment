@@ -6,11 +6,14 @@ import actionlib
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from final_assignment.msg import CommandMessage
+from final_assignment.msg import FeedbackMessage
 from move_base_msgs.msg import *
 
 client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
 
 pub = rospy.Publisher("/cmd_vel", Twist)
+
+fdbk = rospy.Publisher('/middleman/feedback', FeedbackMessage) #here?
 
 keyboard_status = False
 helper_status = False
@@ -76,13 +79,16 @@ def reset():
 			
 def go_to(x, y):	
 	
+	rate = rospy.Rate(1) #here?
+	
 	goal = MoveBaseGoal()
 	goal.target_pose.header.frame_id = 'map'
 	goal.target_pose.pose.orientation.w = 1.0
 	goal.target_pose.pose.position.x = x
 	goal.target_pose.pose.position.y = y
 		
-	client.send_goal(goal)		
+	client.send_goal(goal)	
+		
 	
 	#if not client.wait_for_result(rospy.Duration(30)):
 		#client.cancel_goal()
@@ -91,6 +97,45 @@ def go_to(x, y):
 		#vel.angular.z = 0.99999
 		#pub.publish(vel)	
 			
+	seconds = 1255
+	
+	status = FeedbackMessage()
+	
+	while client.get_state() != 1:
+		#print("\n	Waiting for the goal to be accepted.")
+		
+		status.feedback = 1
+		fdbk.publish(status)
+		
+		rate.sleep()
+	#print("\n	Goal accepted. Press something to abort", end='')
+	
+	
+	while seconds > 0 and client.get_state() == 1:
+		status.time_left = seconds
+		status.feedback = 2
+		fdbk.publish(status)
+		seconds = seconds - 1
+		rate.sleep()
+	if client.get_state() == 3:
+		status.feedback = 3
+		fdbk.publish(status)
+		print('\n	Goal reached')
+	elif client.get_state() == 4:
+		status.feedback = 4
+		fdbk.publish(status)
+		print('\n	Aborted by the server: Not reachable')
+	elif seconds <= 0:
+		status.feedback = 5
+		fdbk.publish(status)
+		client.cancel_goal()
+		print('\n	Aborted by the client: it has taken too much')
+	else:
+		status.feedback = 6
+		fdbk.publish(status)
+		print('\n	Uknown') #?????????????
+	
+
 			
 def new_vel(vel):
 
@@ -107,6 +152,8 @@ def new_vel(vel):
 def main():
 
 	rospy.init_node("middleman")
+	
+	rate = rospy.Rate(1) #here?
 	
 	rospy.Subscriber('/scan', LaserScan, clbk_laser)
 	
