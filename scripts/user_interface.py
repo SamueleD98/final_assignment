@@ -5,8 +5,12 @@ import actionlib
 from move_base_msgs.msg import *
 from std_srvs.srv import *
 from final_assignment.msg import CommandMessage
+import selectors #Experiment
+import sys #Experiment
 
 command = rospy.Publisher('/middleman/control', CommandMessage)
+
+client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
  
 def main():
 		
@@ -30,6 +34,9 @@ def main():
 		# Reset the configuration, canceling every past command
 		command.publish(control_command)
 		
+		client.wait_for_server()	
+		client.cancel_all_goals()
+		
 		if cmd == 1:
 		
 			print ('	Please type the coordinates:')
@@ -42,11 +49,15 @@ def main():
 			
 			print ('\n	Going to [{}, {}]'.format(x, y))
 			
-			control_command.enable_taxi = True
-			control_command.des_x = x
-			control_command.des_y = y
+			goal = MoveBaseGoal()
+			goal.target_pose.header.frame_id = 'map'
+			goal.target_pose.pose.orientation.w = 1.0
+			goal.target_pose.pose.position.x = x
+			goal.target_pose.pose.position.y = y
+				
+			client.send_goal(goal)	
 			
-			command.publish(control_command)
+			wait()
 			
 			
 		elif cmd == 2:
@@ -83,6 +94,55 @@ def main():
 			print ('	Wrong character, please type again.')
 		
 		rate.sleep()
+def wait():
+
+	rate = rospy.Rate(1) #here?
+	
+	countdown = 150
+	
+	while client.get_state() != 1:
+		rate.sleep()
+	print("\n	Goal accepted. Press enter to abort\n\n", end='')
+	while client.get_state() == 1:
+		sel = selectors.DefaultSelector()
+		sel.register(sys.stdin, selectors.EVENT_READ)
+		#print("Want to abort? (y/n): ", end='')
+		sys.stdout.flush()
+		pairs = sel.select(timeout=1)
+		
+		if pairs:
+			sys.stdin.readline().strip()
+			#print('you entered:', passcode)
+			
+			client.cancel_goal()
+			
+			print('\n	Aborted by the user')
+			return
+		else:
+			countdown = countdown - 1
+			if countdown > 0:
+				print('	{} seconds before aborting'.format(countdown))
+	
+			else:
+				print('\n	Aborting..')
+				client.cancel_goal()
+
+		#print('\n	Goal reached')
+
+		#print('\n	Aborted by the server: Not reachable')
+
+		#print('\n	Aborted by the client: it has taken too much')
+	
+		#print('\n	Aborted by the user')
+	if client.get_state() == 3:
+		print('\n	Goal reached')
+	elif client.get_state() == 4:
+		print('\n	Aborted by the server: Not reachable')
+	elif countdown <= 0:
+		print('\n	Aborted by the client: it has taken too much')
+	else:
+		print('\n	Aborted') #Happened when canceling by publishing on cancel topic
+	sys.stdout.flush()
 
 
 if __name__ == '__main__':

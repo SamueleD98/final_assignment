@@ -8,7 +8,7 @@ from geometry_msgs.msg import Twist
 from final_assignment.msg import CommandMessage
 from move_base_msgs.msg import *
 
-client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+#client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
 
 pub = rospy.Publisher("/cmd_vel", Twist)
 
@@ -54,17 +54,17 @@ def commandCallBack(cmd):
 	#the node cancel the last goal and set the speed to 0
 	reset()
 	
-	if cmd.enable_taxi:
-		go_to(cmd.des_x, cmd.des_y)
-	else:
-		keyboard_status = cmd.enable_userCtrl
-		helper_status = cmd.enable_helper	
+	#if cmd.enable_taxi:
+		#go_to(cmd.des_x, cmd.des_y)
+	#else:
+	keyboard_status = cmd.enable_userCtrl
+	helper_status = cmd.enable_helper	
 		
 def reset():
 	global desire_speed
 	
-	client.wait_for_server()	
-	client.cancel_all_goals()
+	#client.wait_for_server()	
+	#client.cancel_all_goals()
 	
 	desired_speed['linear'] = 0
 	desired_speed['angular'] = 0
@@ -74,15 +74,15 @@ def reset():
 	vel.angular.z = 0
 	pub.publish(vel)	
 			
-def go_to(x, y):	
+#def go_to(x, y):	
 	
-	goal = MoveBaseGoal()
-	goal.target_pose.header.frame_id = 'map'
-	goal.target_pose.pose.orientation.w = 1.0
-	goal.target_pose.pose.position.x = x
-	goal.target_pose.pose.position.y = y
+	#goal = MoveBaseGoal()
+	#goal.target_pose.header.frame_id = 'map'
+	#goal.target_pose.pose.orientation.w = 1.0
+	#goal.target_pose.pose.position.x = x
+	#goal.target_pose.pose.position.y = y
 		
-	client.send_goal(goal)		
+	#client.send_goal(goal)		
 	
 	#client.wait_for_result(rospy.Duration(30))
 			
