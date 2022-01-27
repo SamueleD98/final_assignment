@@ -9,9 +9,10 @@ from final_assignment.msg import FeedbackMessage
 import selectors #Experiment
 import sys #Experiment
 
-client = actionlib.SimpleActionClient('move_base', MoveBaseAction) #Experiment
+#client = actionlib.SimpleActionClient('move_base', MoveBaseAction) #Experiment
 
 command = rospy.Publisher('/middleman/control', CommandMessage) #here?
+
 
 feedback = 0
 time_left = 99
@@ -96,7 +97,6 @@ def main():
 		
 		rate.sleep()
 		
-	#spin ??
 
 def feedbackCallBack(fdbk):
 	global feedback, time_left
@@ -160,7 +160,7 @@ def wait():
 	elif feedback == 5:
 		print('\n	Aborted by the client: it has taken too much')
 	else:
-		print('\n	Aborted') #?????????????
+		print('\n	Aborted') #Happened when canceling by publishing on cancel topic
 	sys.stdout.flush()
 
 
