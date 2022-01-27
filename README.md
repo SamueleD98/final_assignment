@@ -81,8 +81,36 @@ The *countdown* variable correponds to the number of seconds the program will wa
 
 In order to interrupt an input operation after a given time, the [selectors module](https://docs.python.org/3/library/selectors.html) is used. This module provides access to the select() system call, allow a program to monitor multiple file descriptors, waiting until one or more of the file descriptors become "ready" for some class of I/O operation. A file descriptor is considered ready if it is possible to perform the corresponding I/O operation without blocking. In this particular case the desired operation is a *READ* operation on the *stdin*. The select call will try to read for one second before returning.
 
-## Controller node
+## Middleman node
+The system gives the user the chance to directly control the robot thanks to the *teleop_twist_keyboard*. Since the keyboard should be enabled only when the user explicity ask to control the robot, an intermediary must exist betwen the *teleop_twist_keyboard* and the robot itself (that's why the node is called *midlleman*). This node will write the velocity commands given by the *teleop_twist_keyboard* on the `/cmd_vel` topic only when the user asks to (command number 2).  
 
+Also, the user can take advantage of an assistant that, when driving with the keyboard, prevents the robot to collide with a wall (command number 3). In this case the node will modify the velocity commands received by the keyboard before publishing them on the `/cmd_vel` topic.  
 
+The node mainly works with callbacks to the topics it is subscribed to:
+- `/scan` topic: if the assistant mentioned before is enabled (boolean helper_status), the node will:
+  1. update the distance of the closest obstacle in the left lateral sector [-90°,-18°], central sector [-18°,18°] and right lateral sector [18°,90°], everytime a new laser scan is published;
+  2. update the velocity commands to avoid collision following this simple algorithm:
+   <pre>
+   <b>if</b> very close obstacle in front
+    set the linear velocity to zero
+   <b>else</b>
+    set the linear velocity to the desired one *
+   <b>if</b> very close obstacle in lateral region AND the angular velocity is dangerous **
+    set the angular velocity to zero
+   <b>else</b>
+    set the angular velocity to the desired one
+   </pre>  
+  3. publish the new velocity   
+- `/middleman/control` topic: custom topic where the User Interface node publish the commands that reflects the robot desired behavior. The callback function will set the *keyboard_status* and the *helper_status*  global boolean variables to the desired value
+- `/middleman/cmd_vel` topic: custom topic where the *teleop_twist_keyboard* publish the velocity commands. The callback function behaves accordingly to the following algorithm:
+  <b>if</b> keyboard_status
+   <b>if</b> helper_status
+    set the desired velocity equal to the one published by the *teleop_twist_keyboard*
+   <b>else</b>
+    publish the velocity published by the *teleop_twist_keyboard*
+  </pre>  
+  So, the function won't have any effect if the keyboard is not enabled. If it is, and so is the assistant, the velocity will be saved on the global variable desired_speed
 
+\* the desired velocity is a global variable set by the user when using the keyboard to control the robot
+\** the angular velocity is considered dangerous if the robot will point to a close obstacle by keeping that velocity.
 
