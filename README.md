@@ -69,10 +69,10 @@ The *wait()* function contains the code that allow the user to cancel a goal whi
 <b>while</b> the action is not accepted yet
  sleep for a second
 <b>while</b> the action is active
- <b>if</b> the user press enter
+ <b>if</b> the user press enter during a one second interval
   cancel the goal
  <b>else</b>
-  decrease the countdown variable 
+  decrease the countdown variable by one second
   <b>if</b> countdown is equal to zero
    cancel the goal 
 </pre>  
@@ -101,7 +101,7 @@ The node mainly works with callbacks to the topics it is subscribed to:
     set the angular velocity to the desired one
    </pre>  
   3. publish the new velocity   
-- `/middleman/control` topic: custom topic where the User Interface node publish the commands that reflects the robot desired behavior. The callback function will set the *keyboard_status* and the *helper_status*  global boolean variables to the desired value
+- `/middleman/control` topic: custom topic where the User Interface node publish the commands that reflects the robot desired behavior. The callback function will set the *keyboard_status* and the *helper_status*  global boolean variables to the desired value after having canceled any previous command.
 - `/middleman/cmd_vel` topic: custom topic where the *teleop_twist_keyboard* publish the velocity commands. The callback function behaves accordingly to the following algorithm:
   <b>if</b> keyboard_status
    <b>if</b> helper_status
@@ -109,7 +109,7 @@ The node mainly works with callbacks to the topics it is subscribed to:
    <b>else</b>
     publish the velocity published by the *teleop_twist_keyboard*
   </pre>  
-  So, the function won't have any effect if the keyboard is not enabled. If it is, and so is the assistant, the velocity will be saved on the global variable desired_speed
+  So, the function won't have any effect if the keyboard is not enabled. If it is, and so is the assistant, the velocity will be saved on the global variable desired_speed and eventually published by the `/scan` callback (if possible). If the assistant is disabled, then the velocity commands will be directly published on the `\cmd_vel` topic.
 
 \* the desired velocity is a global variable set by the user when using the keyboard to control the robot
 \** the angular velocity is considered dangerous if the robot will point to a close obstacle by keeping that velocity.
