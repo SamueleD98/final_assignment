@@ -11,6 +11,12 @@ import sys #Experiment
 command = rospy.Publisher('/middleman/control', CommandMessage)
 
 client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+
+
+if rospy.has_param('countdown'):
+	countdown = rospy.get_param('countdown')
+else:
+	countdown = 5
  
 def main():
 		
@@ -98,7 +104,8 @@ def wait():
 
 	rate = rospy.Rate(1) #here?
 	
-	countdown = 150
+	#countdown = 150
+	global countdown
 	
 	while client.get_state() != 1:
 		rate.sleep()
