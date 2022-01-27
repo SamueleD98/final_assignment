@@ -111,6 +111,7 @@ The node mainly works with callbacks to the topics it is subscribed to:
   </pre>  
   So, the function won't have any effect if the keyboard is not enabled. If it is, and so is the assistant, the velocity will be saved on the global variable desired_speed and eventually published by the `/scan` callback (if possible). If the assistant is disabled, then the velocity commands will be directly published on the `\cmd_vel` topic.
 
-\* the desired velocity is a global variable set by the user when using the keyboard to control the robot
+\* the desired velocity is a global variable set by the user when using the keyboard to control the robot  
+
 \** the angular velocity is considered dangerous if the robot will point to a close obstacle by keeping that velocity.
 
