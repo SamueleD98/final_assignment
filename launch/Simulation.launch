@@ -3,11 +3,24 @@
 <launch>
 	<include file="$(find final_assignment)/launch/simulation_gmapping.launch" />
 	<include file="$(find final_assignment)/launch/move_base.launch" />
-   	<node pkg="final_assignment" name="user_interface" type="user_interface.py" output="screen" required="true" launch-prefix="xterm -e" /> 
-   	<node pkg="final_assignment" name="middleman" type="middleman.py" required="true" /> 
+	
+	<arg name="countdown" default = "150" />
+	
+	<param name="countdown" type="int" value="50" />
+	
+   	<node pkg="final_assignment" name="user_interface" type="user_interface.py" 
+   		output="screen" 
+   		required="true" 
+   		launch-prefix="xterm -e"/> 
+   	<node pkg="final_assignment" name="middleman" type="middleman.py" 
+   		required="true" /> 
+   		
    	<remap from="/cmd_vel" to="/middleman/cmd_vel"/>
-   	<node pkg="teleop_twist_keyboard" name="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" required="true" launch-prefix="xterm -e" /> 
-   	
+   	<node pkg="teleop_twist_keyboard" name="teleop_twist_keyboard" type="teleop_twist_keyboard.py" 
+   		output="screen" 
+   		required="true" 
+   		launch-prefix="xterm -e" /> 	
+	
 </launch>
 
 
