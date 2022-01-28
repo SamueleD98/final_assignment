@@ -29,9 +29,10 @@ It has three different behaviors, depending on the user input:
   - The given Execution Time expires;
   - The robot manage to reach the target.
 - It can be fully controlled by the user;  
-- It can be *partially* controlled by the user. If the robot is dangerously close to a wall, its speed will be modified in order to avoid a collision.  
+- It can be *partially* controlled by the user: if the robot is dangerously close to a wall, its speed will be modified from the original desired one, in order to avoid a collision.  
 
-The user can change the robot behavior anytime, by giving another command or just by pressing *0*.
+The user can change the robot behavior anytime by giving another command. Everytime a new input is inserted, the program automatically terminate any previous operation and elaborate the new command.  
+If the user wants so, the robot could simply stop by just pressing *0*. As code it really doesn't do much because, as mentioned, canceling past operations is a default operation. In this case, though, no other commands are given to the robot that then won't move.
 
 ## User Interface node
 The UI node takes care of the user inputs for the control of the robot. It offers 4 options, as shown in the image !!!!!!!!!!!!!!!!!!!!!!!!!!:  
