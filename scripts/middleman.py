@@ -2,23 +2,17 @@
 
 import rospy
 import actionlib
-#from std_msgs.msg import String, Empty
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from final_assignment.msg import CommandMessage
 from move_base_msgs.msg import *
 
-#client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-
 pub = rospy.Publisher("/cmd_vel", Twist)
 
-keyboard_status = False
-helper_status = False
+keyboard_status = False	#Enable the keyboard-given control commands
+helper_status = False	#Enable the driving assistant
 
-desired_speed = {
-	'linear':  0,
-	'angular':  0,
-}
+desired_speed = {'linear':  0, 'angular':  0}	#Desired velocity due to keyboard-given control commands
 
 
 def clbk_laser(msg):
@@ -48,44 +42,20 @@ def update_vel(regions):
 
 def commandCallBack(cmd):
 	
-	global keyboard_status, helper_status, desired_speed
+	global desired_speed, keyboard_status, helper_status
 	
 	#Each time a new command is given, 
-	#the node cancel the last goal and set the speed to 0
-	reset()
-	
-	#if cmd.enable_taxi:
-		#go_to(cmd.des_x, cmd.des_y)
-	#else:
-	keyboard_status = cmd.enable_userCtrl
-	helper_status = cmd.enable_helper	
-		
-def reset():
-	global desire_speed
-	
-	#client.wait_for_server()	
-	#client.cancel_all_goals()
-	
+	#the node set the speed to 0	
 	desired_speed['linear'] = 0
 	desired_speed['angular'] = 0
 	
 	vel = Twist()	
 	vel.linear.x = 0
 	vel.angular.z = 0
-	pub.publish(vel)	
-			
-#def go_to(x, y):	
+	pub.publish(vel)
 	
-	#goal = MoveBaseGoal()
-	#goal.target_pose.header.frame_id = 'map'
-	#goal.target_pose.pose.orientation.w = 1.0
-	#goal.target_pose.pose.position.x = x
-	#goal.target_pose.pose.position.y = y
-		
-	#client.send_goal(goal)		
-	
-	#client.wait_for_result(rospy.Duration(30))
-			
+	keyboard_status = cmd.enable_userCtrl
+	helper_status = cmd.enable_helper				
 			
 def new_vel(vel):
 
@@ -97,7 +67,6 @@ def new_vel(vel):
 			desired_speed['angular'] = vel.angular.z
 		else:				
 			pub.publish(vel)	
-	
 	
 def main():
 

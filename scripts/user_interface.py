@@ -13,10 +13,7 @@ command = rospy.Publisher('/middleman/control', CommandMessage)
 client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
 
 
-if rospy.has_param('countdown'):
-	countdown = rospy.get_param('countdown')
-else:
-	countdown = 5
+
  
 def main():
 		
@@ -28,12 +25,13 @@ def main():
 	
 	while not rospy.is_shutdown():
 	
-		cmd = float(input('\nCommand :'))
+		try:
+			cmd = int(input('\n Command :'))
+		except:
+			print ('\n	Wrong input, not an integer.')
+			continue
 		
 		control_command = CommandMessage()
-		control_command.enable_taxi = False
-		control_command.des_x = 0
-		control_command.des_y = 0
 		control_command.enable_userCtrl = False
 		control_command.enable_helper = False		
 		
@@ -46,10 +44,12 @@ def main():
 		if cmd == 1:
 		
 			print ('	Please type the coordinates:')
-			
-			x = float(input('		x :'))
-			
-			y = float(input('		y :'))
+			try:
+				x = float(input('		x :'))
+				y = float(input('		y :'))
+			except:
+				print ('\n	Wrong input, not a float.')
+				continue
 			
 			#client.wait_for_server()
 			
@@ -74,7 +74,7 @@ def main():
 			
 			command.publish(control_command)
 			
-			print ('	Cancel giving another command or by pressing any other number')	
+			print ('	Cancel by giving another command or by pressing 0')	
 		
 		elif cmd == 3:
 		
@@ -85,7 +85,7 @@ def main():
 			
 			command.publish(control_command)	
 			
-			print ('	Press any number to cancel')		
+			print ('	Cancel by giving another command or by pressing 0')	
 			
 		elif cmd == 4:
 			
@@ -93,64 +93,53 @@ def main():
 			
 		elif cmd == 0:
 		
-			print ('	Canceled')
+			print ('\n	Canceled')
 			
 		else:
 		
-			print ('	Wrong character, please type again.')
+			print ('\n	Not a command, please type again.')
 		
 		rate.sleep()
 def wait():
 
-	rate = rospy.Rate(1) #here?
+	rate = rospy.Rate(20) #here?
 	
-	#countdown = 150
-	global countdown
+	if rospy.has_param('countdown'):
+		countdown = rospy.get_param('countdown')
+	else:
+		countdown = 150
 	
 	while client.get_state() != 1:
 		rate.sleep()
-	print("\n	Goal accepted. Press enter to abort\n\n", end='')
+	print("\n	Goal accepted by the server. Press enter to abort")
+	print('\n	{} seconds before aborting'.format(countdown))
 	while client.get_state() == 1:
-		sel = selectors.DefaultSelector()
-		sel.register(sys.stdin, selectors.EVENT_READ)
-		#print("Want to abort? (y/n): ", end='')
-		sys.stdout.flush()
-		pairs = sel.select(timeout=1)
-		
-		if pairs:
-			sys.stdin.readline().strip()
-			#print('you entered:', passcode)
-			
+		sel = selectors.DefaultSelector()	#Define selector
+		sel.register(sys.stdin, selectors.EVENT_READ)	#Register the Read Event on the stdin input
+		try_to_read = sel.select(timeout=1)	#Try to get an input for a second
+		if try_to_read:	#If an input is given (and so the enter button has been pressed)
+			sys.stdin.readline().strip() #Remove the line from the buffer
 			client.cancel_goal()
-			
 			print('\n	Aborted by the user')
 			return
 		else:
 			countdown = countdown - 1
-			if countdown > 0:
-				print('	{} seconds before aborting'.format(countdown))
-	
-			else:
+			if countdown <= 0:
 				print('\n	Aborting..')
 				client.cancel_goal()
-
-		#print('\n	Goal reached')
-
-		#print('\n	Aborted by the server: Not reachable')
-
-		#print('\n	Aborted by the client: it has taken too much')
-	
-		#print('\n	Aborted by the user')
+				print('\n	Aborted by the client: it has taken too much')
+				return
+			else:
+				if countdown%5 == 0:
+					print('	{} seconds before aborting'.format(countdown))
+		rate.sleep()
+		
 	if client.get_state() == 3:
 		print('\n	Goal reached')
 	elif client.get_state() == 4:
 		print('\n	Aborted by the server: Not reachable')
-	elif countdown <= 0:
-		print('\n	Aborted by the client: it has taken too much')
 	else:
-		print('\n	Aborted') #Happened when canceling by publishing on cancel topic
-	sys.stdout.flush()
-
+		print('\n	Aborted by msg published on the /move_base/cancel topic') 
 
 if __name__ == '__main__':
     main()
