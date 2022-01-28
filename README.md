@@ -1,6 +1,6 @@
 # Final Assignment
 This software architecture in ROS implements two nodes to control a robot in the given environment.  
-The software needs the gmapping package (that implements the omonimus algorithm (?)) and the move_base package for localizing the robot and plan the motion.  
+The software needs the gmapping package (that implements the omonimus algorithm) and the move_base package for localizing the robot and plan the motion.  
 The user interface node will allow the user to choose either to let the robot drive itself to a specific given point or to directly drive it freely. Even more, the user has the possibility to be assisted by the software in the obstacle avoidance.  
  
 ## Pre-development phase
