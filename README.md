@@ -134,7 +134,10 @@ So, the function won't have any effect if the keyboard is not enabled. If it is,
 ## Further improvements
 To make the code more modular, the client of the Move_Base server should be implemented in the middleman node, leaving to the user interface node just the task of taking user's commands and sending them to the middleman node. Actually, the development of this change already began in the move_base-interface-on-middleman branch of this project.  
 
-The Move_Base server takes a non-negligible amount of time to notify the successful reaching of a point. During this time the countdown could reach zero and set the automatic canceling of the goal, resulting in a non completed operation (that actually was completed). To avoid this situation, it is, of course, possible to increase the time given to the robot to reach the target. This will, though, make the countdown useless since the program will either abort the operation for an unreachable target or actually reach it before it could go off.  
+The Move_Base server takes a non-negligible amount of time to notify the successful reaching of a point. Here, for example, the robot was asked to reach the very point it was located.
+![countdown](/images/countdown.png)
+It took slightly more than 3 minutes to the Move_Base server to notify the reached point.
+During this time the countdown could reach zero and set the automatic canceling of the goal, resulting in a non completed operation (that actually was completed). To avoid this situation, it is, of course, possible to increase the time given to the robot to reach the target. This will, though, make the countdown useless since the program will either abort the operation for an unreachable target or actually reach it before it could go off.  
 What if the user wants to know if a point is actually reachable in a specific amount of time? The program should return the accomplished operation before the countdown expires and before the move_base server notify the "reached point" event. It is possible to do so by comparing the actual position of the robot to the desired one and if they are the same (maybe with a given tolerance) the goal is accomplished.
 
 
