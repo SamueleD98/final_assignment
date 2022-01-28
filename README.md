@@ -2,6 +2,8 @@
 This software architecture in ROS implements two nodes to control a robot in the given environment.  
 The software needs the gmapping package (that implements the omonimus algorithm (?)) and the move_base package for localizing the robot and plan the motion.  
 The user interface node will allow the user to chose either to let the robot drive itself to a specific given point or to directly drive it freely. Even more, the user has the possibility to be assisted by the software in the obstacle avoidance.  
+![graph](/images/rosgraph.png)
+
  
 ## Pre-development phase
 To fully exploit the move_base package it's useful to read its [documentation](https://wiki.ros.org/move_base). At the linked page, the Action Subscribed Topics are listed. Those  are almost essential during the development, even though the goals will be sent using a *SimpleActionClient*.  
