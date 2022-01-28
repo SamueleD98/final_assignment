@@ -51,10 +51,10 @@ The code implements the following algorithm:
    wait the action to be completed or to be canceled
    <b>break</b>
   <b>case</b> '2'
-   send to middlman a command to enable the user control
+   send to middleman a command to enable the user control
    <b>break</b>
   <b>case</b> '3'
-   send to middlman a command to partially enable the user control
+   send to middleman a command to partially enable the user control
    <b>break</b>
   <b>case</b> '4'
    exit
@@ -65,7 +65,7 @@ The code implements the following algorithm:
    print "Wrong character, please type again."
 </pre>  
 
-The *wait()* function contains the code that allow the user to cancel a goal while receiving feedbacks from the Move_Base server. Its algortihm is the following:
+The *wait()* function contains the code that allows the user to cancel a goal while receiving feedbacks from the Move_Base server. Its algortihm is the following:
 <pre>
 <b>while</b> the action is not accepted yet
  sleep for a second
@@ -92,29 +92,40 @@ Also, the user can take advantage of an assistant that, when driving with the ke
 The node mainly works with callbacks to the topics it is subscribed to:
 - `/scan` topic: if the assistant mentioned before is enabled (boolean helper_status), the node will:
   1. update the distance of the closest obstacle in the left lateral sector [-90°,-18°], central sector [-18°,18°] and right lateral sector [18°,90°], everytime a new laser scan is published;
-  2. update the velocity commands to avoid collision following this simple algorithm:
-   <pre>
+  2. update the velocity commands to avoid collision following this simple algorithm:  <pre>
    <b>if</b> very close obstacle in front
     set the linear velocity to zero
    <b>else</b>
-    set the linear velocity to the desired one *
+    set the linear velocity to the desired one 
    <b>if</b> very close obstacle in lateral region AND the angular velocity is dangerous **
     set the angular velocity to zero
    <b>else</b>
     set the angular velocity to the desired one
-   </pre>  
+   </pre>  Please note, the desired velocity is a global variable set by the user when using the keyboard to control the robot. Also, the angular velocity is considered  dangerous if the robot will point to a close obstacle by keeping that velocity.
   3. publish the new velocity   
-- `/middleman/control` topic: custom topic where the User Interface node publish the commands that reflects the robot desired behavior. The callback function will set the *keyboard_status* and the *helper_status*  global boolean variables to the desired value after having canceled any previous command.
-- `/middleman/cmd_vel` topic: custom topic where the *teleop_twist_keyboard* publish the velocity commands. The callback function behaves accordingly to the following algorithm:
+- `/middleman/control` topic: topic (with custom message called CommandMessage) where the User Interface node publish the commands that reflects the robot desired behavior. The callback function will set the *keyboard_status* and the *helper_status*  global boolean variables to the desired value after having canceled any previous command.
+- `/middleman/cmd_vel` topic: topic where the *teleop_twist_keyboard* publish the velocity commands. The callback function behaves accordingly to the following algorithm:
   <b>if</b> keyboard_status
    <b>if</b> helper_status
     set the desired velocity equal to the one published by the *teleop_twist_keyboard*
    <b>else</b>
     publish the velocity published by the *teleop_twist_keyboard*
-  </pre>  
-  So, the function won't have any effect if the keyboard is not enabled. If it is, and so is the assistant, the velocity will be saved on the global variable desired_speed and eventually published by the `/scan` callback (if possible). If the assistant is disabled, then the velocity commands will be directly published on the `\cmd_vel` topic.
+  </pre>  So, the function won't have any effect if the keyboard is not enabled. If it is, and so is the assistant, the velocity will be saved on the global variable desired_speed and eventually published by the `/scan` callback (if possible). If the assistant is disabled, then the velocity commands will be directly published on the `\cmd_vel` topic.
 
-\* the desired velocity is a global variable set by the user when using the keyboard to control the robot  
+The custom message CommandMessage is made up of two boolean: enable_userCtrl and enable_helper. Those set the the keyboard_status and the helper_status in middleman node.
 
-\** the angular velocity is considered dangerous if the robot will point to a close obstacle by keeping that velocity.
+## Further improvements
+To make the code more modular, the client of the Move_Base server should be implemented in the middleman node, leaving to the user interface node just the task of taking user's commands and sending them to the middleman node. Actually the development of this change already began in the move_base-interface-on-middleman branch of this project.  
+
+The Move_Base server takes a non-negligible amount of time to notify the succesful reaching of a point. During this time the countdown could reach zero and set the automatic canceling of the goal resulting in a non completed operation (that actually was completed). To avoid this situation it is, of course, possible to increase the time given to the robot to reach the target. This will, though, make the countdown useless since the program will either abort the operation for unreachable target or actually reach it before it could goes off.  
+What if the user wants to know if a point is actually reachable in a specific amount of time? The program should return the accomplished operation before the countdown expires and before the move_base server notify the "reached point" event. It is possible to do so by comparing the actual position of the robot to the desired one and if they are the same (maybe with a given tollerance) the goal is accomplished.
+
+
+
+
+
+
+
+
+
 
