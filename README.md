@@ -35,9 +35,9 @@ The user can change the robot behavior anytime by giving another command. Everyt
 If the user wants so, the robot could simply stop by just pressing *0*. As code it really doesn't do much because, as mentioned, canceling past operations is a default operation. In this case, though, no other commands are given to the robot that then won't move.
 
 ## User Interface node
-The UI node takes care of the user inputs for the control of the robot. It offers 4 options, as shown in the image !!!!!!!!!!!!!!!!!!!!!!!!!!:  
+The UI node takes care of the user inputs for the control of the robot. It offers 4 options, as shown in the image:  
 
-![user_interface](/images/roslaunch.png)
+![user_interface](/images/interface.png)
 
 The code implements the following algorithm:  
 <pre>
