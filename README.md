@@ -19,7 +19,7 @@ The repository has a launch file that will, in order:
 - run the *teleop_twist_keyboard node*.  
 
 The ROS Master node will be automatically called when launching the file.  
-To launch use `roslaunch final_assignment Simulation.launch`  
+To launch use `roslaunch final_assignment Simulation.launch`. It is possible to set the amount of time the program will wait the robot to reach a point as parameter by setting the execution_time argument. The default value is 150 seconds.
 
 ## Robot behaviour 
 It has three different behaviors, depending on the user input:
