@@ -1,12 +1,12 @@
-.. assignment_1 documentation master file, created by
+.. final_assignment documentation master file, created by
    sphinx-quickstart on Tue Apr 12 17:40:02 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-RT1 assignment_1's documentation 
+RT assignment_1's documentation
 ============================================
 
-This is the full code's documentation of the first assignment of the RT1 course
+This is the documentation of the RT course's first assignment.
 
 .. toctree::
    :maxdepth: 2

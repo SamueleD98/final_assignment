@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RT1 assignment_1’s documentation &mdash; RT1 assignment_1 1.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>RT assignment_1’s documentation &mdash; final_assignment 1.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,7 +16,7 @@
         <script type="text/javascript" src="_static/language_data.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <!-- <link rel="search" title="Search" href="search.html" /> -->
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -24,7 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> assignment_1
+            <a href="#" class="icon icon-home"> final_assignment
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -36,9 +36,9 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">RT1 assignment_1’s documentation</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices</a></li>
-<li><a class="reference internal" href="#module-scripts.user_interface">User Interface Module</a></li>
+<li><a class="reference internal" href="#">RT assignment_1’s documentation</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#user-interface-module">User Interface Module</a></li>
 <li><a class="reference internal" href="#module-scripts.middleman">Middleman Module</a></li>
 </ul>
 </div>
@@ -48,7 +48,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">assignment_1</a>
+          <a href="#">final_assignment</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -56,7 +56,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>RT1 assignment_1’s documentation</li>
+      <li>RT assignment_1’s documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -66,58 +66,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="rt2-assignment1-s-documentation">
-<h1>RT1 assignment_1's documentation<a class="headerlink" href="#rt2-assignment1-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>This is the full code's documentation of the first assignment of the RT1 course</p>
+  <div class="section" id="rt-assignment-1-s-documentation">
+<h1>RT assignment_1’s documentation<a class="headerlink" href="#rt-assignment-1-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This is the documentation of the RT course’s first assignment.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h1>Indices<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
 <li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<!-- <li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>-->
 </ul>
 </div>
-<div class="section" id="module-scripts.user_interface">
-<span id="user-interface-module"></span><h1>User Interface Module<a class="headerlink" href="#module-scripts.user_interface" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-user_interface"></span><p>The node takes care of the user inputs for the control of the robot</p>
-<dl class="docutils">
-<dt>Publishes to:</dt>
-<dd>/middleman/control the control command</dd>
-<dt>Action Clients:</dt>
-<dd>‘move_base’ MoveBaseAction client used to make the robot reach a specific point</dd>
-</dl>
-<dl class="data">
-<dt id="scripts.user_interface.client">
-<code class="descclassname">scripts.user_interface.</code><code class="descname">client</code><em class="property"> = &lt;actionlib.simple_action_client.SimpleActionClient object&gt;</em><a class="headerlink" href="#scripts.user_interface.client" title="Permalink to this definition">¶</a></dt>
-<dd><p>Global client for interfacing with the move_base action server.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="scripts.user_interface.main">
-<code class="descclassname">scripts.user_interface.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/user_interface.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scripts.user_interface.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function initializes the ROS node and asks the user to insert a command. Depending on the command, the function will
-either pubblish a command for the <a class="reference internal" href="#module-middleman" title="middleman: Python module for controlling the robot (Unix)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">middleman</span></code></a> node or will send an action command to the <code class="docutils literal notranslate"><span class="pre">move_base</span></code> action server.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="scripts.user_interface.wait">
-<code class="descclassname">scripts.user_interface.</code><code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/user_interface.html#wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scripts.user_interface.wait" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function for waiting for the goal to be accomplished or canceled.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<div class="section" id="user-interface-module">
+<h1>User Interface Module<a class="headerlink" href="#user-interface-module" title="Permalink to this headline">¶</a></h1>
 </div>
 <div class="section" id="module-scripts.middleman">
 <span id="middleman-module"></span><h1>Middleman Module<a class="headerlink" href="#module-scripts.middleman" title="Permalink to this headline">¶</a></h1>
